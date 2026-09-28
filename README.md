@@ -21,7 +21,7 @@ The website's `config.js` contains the configured web app endpoint. Changes to C
 7. Copy the web app URL ending in `/exec` into the `endpoint` value in `config.js`, commit and redeploy the site.
 8. Submit a test registration. Verify one row appears in the Sheet and the website shows confirmation. Repeat the same email to verify duplicate handling.
 
-The script validates required fields, checks a honeypot, prevents repeat email addresses or website hostnames (ignoring case, www, scheme, ports, paths and query strings), blocks dochase.com and dochaseadx.com including their subdomains, serialises writes and protects against spreadsheet formula injection. It does not send emails or generate widget scripts. Email delivery remains a manual team task.
+The script validates required fields, checks a honeypot, prevents repeat email addresses or website hostnames (ignoring case, www, scheme, ports, paths and query strings), blocks dochase.com, dochaseadx.com, facebook.com, instagram.com and google.com including their subdomains, serialises writes and protects against spreadsheet formula injection. It does not send emails or generate widget scripts. Email delivery remains a manual team task.
 
 Keep the spreadsheet private; only the web app endpoint needs public access.
 

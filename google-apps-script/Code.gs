@@ -58,7 +58,7 @@ function doPost(event) {
     }
 
     if (isBlockedWebsite(website)) {
-      return respond("error", "Enter your own publication’s website. Dochase domains cannot be registered.");
+      return respond("error", "Enter your own publication’s website. Dochase, Facebook, Instagram and Google URLs cannot be registered.");
     }
 
     const sheet = registrationSheet();
@@ -124,7 +124,7 @@ function websiteHost(value) {
 
 function isBlockedWebsite(value) {
   const host = websiteHost(value);
-  return ["dochase.com", "dochaseadx.com"].some((domain) => host === domain || host.endsWith("." + domain));
+  return ["dochase.com", "dochaseadx.com", "facebook.com", "instagram.com", "google.com"].some((domain) => host === domain || host.endsWith("." + domain));
 }
 
 function isWebsite(value) {

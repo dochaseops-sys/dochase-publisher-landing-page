@@ -58,7 +58,7 @@ function websiteHost(value) {
 
 function isBlockedWebsite(value) {
   const host = websiteHost(value);
-  return ["dochase.com", "dochaseadx.com"].some((domain) => host === domain || host.endsWith("." + domain));
+  return ["dochase.com", "dochaseadx.com", "facebook.com", "instagram.com", "google.com"].some((domain) => host === domain || host.endsWith("." + domain));
 }
 
 function isValidWebsite(value) {
@@ -92,7 +92,7 @@ function validate() {
     setError(fields.website, fields.website.message);
     valid = false;
   } else if (isBlockedWebsite(fields.website.input.value)) {
-    setError(fields.website, "Enter your own publication’s website. Dochase domains cannot be registered.");
+    setError(fields.website, "Enter your own publication’s website. Dochase, Facebook, Instagram and Google URLs cannot be registered.");
     valid = false;
   }
   if (!fields.consent.input.checked) {
