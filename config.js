@@ -1,0 +1,3 @@
+window.DOCHGAMES_WAITLIST_CONFIG = {
+  endpoint: "__GOOGLE_APPS_SCRIPT_WEB_APP_URL__"
+};

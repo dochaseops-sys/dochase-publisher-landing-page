@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="description" content="Register your website for a DochGames game widget. Our team will email your embed script and installation instructions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./favicon.png" />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>Register your website | DochGames Publishers</title>
+</head>
+<body>
+  <a class="skip-link" href="#waitlist-form">Skip to the application</a>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="DochGames Publisher home">
+      <span class="official-logo"><img src="./dochgames-logo-monochrome.png" alt="DochGames — Giga mascot and wordmark" /></span><span class="brand-section">Publisher</span>
+    </a>
+    <p>Publisher registration</p>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="kicker">For digital publishers</p>
+        <h1 id="page-title">Add playable games to <em>your website.</em></h1>
+      </div>
+      <div class="hero-copy">
+        <p>Give your readers something to play alongside your content.</p>
+        <p>Register your website and our team will email your widget’s embed script with installation instructions.</p>
+      </div>
+    </section>
+
+    <section class="application" aria-labelledby="form-title">
+      <aside class="application-intro">
+        <p class="section-index">See it on a publisher’s website</p>
+        <figure class="widget-example">
+          <a href="./widget-example.png" target="_blank" rel="noopener" aria-label="View full-size DochGames widget screenshot"><img src="./widget-example.png" width="1512" height="859" alt="A DochGames widget embedded within a Wizdok article, displaying eight game cards." /></a>
+          <figcaption>DochGames embedded within a Wizdok article. Select the image for a closer look.</figcaption>
+        </figure>
+        <p class="delivery-note">Your script comes from our team, by email. Add it to your website yourself or pass it to the person who manages your site.</p>
+      </aside>
+
+      <div class="form-area">
+        <div id="form-view">
+          <h2 id="form-title">Register your website</h2>
+          <p class="form-intro">Tell us where you’d like to add DochGames. All four fields are required.</p>
+          <form id="waitlist-form" method="post" target="submission-frame" novalidate>
+            <div class="field">
+              <label for="full-name">Full name <span>*</span></label>
+              <input id="full-name" name="fullName" type="text" autocomplete="name" required />
+              <span class="field-error" id="full-name-error"></span>
+            </div>
+            <div class="field">
+              <label for="work-email">Work email <span>*</span></label>
+              <input id="work-email" name="email" type="email" autocomplete="email" inputmode="email" required />
+              <span class="field-error" id="work-email-error"></span>
+            </div>
+            <div class="field">
+              <label for="publication">Publication or company <span>*</span></label>
+              <input id="publication" name="publication" type="text" autocomplete="organization" required />
+              <span class="field-error" id="publication-error"></span>
+            </div>
+            <div class="field">
+              <label for="website">Website <span>*</span></label>
+              <div class="url-field"><span aria-hidden="true">https://</span><input id="website" name="website" type="text" inputmode="url" autocomplete="url" placeholder="yourpublication.com" required /></div>
+              <span class="field-error" id="website-error"></span>
+            </div>
+            <div class="honeypot" aria-hidden="true"><label for="fax-number">Fax number</label><input id="fax-number" name="faxNumber" type="text" tabindex="-1" autocomplete="off" /></div>
+
+            <div class="form-options">
+              <label class="check-row" for="consent">
+                <input id="consent" name="consent" value="Yes" type="checkbox" required />
+                <span>I agree that DochGames may contact me about my website registration and send my widget script. <a class="text-button" href="https://dochaseadx.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a></span>
+              </label>
+              <span class="field-error checkbox-error" id="consent-error"></span>
+              <label class="check-row optional" for="marketing"><input id="marketing" name="marketing" value="Yes" type="checkbox" /><span>Send me occasional product updates. Optional.</span></label>
+            </div>
+
+            <input type="hidden" name="source" value="publisher-registration" />
+            <div class="submit-row">
+              <button class="submit-button" type="submit"><span>Register my website</span><span class="button-status" aria-hidden="true"></span></button>
+              <p>We won’t send unrelated promotions.</p>
+            </div>
+            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <div id="success-view" class="success-view" hidden tabindex="-1">
+          <p class="success-label">Registration received</p>
+          <h2>Your website is registered.</h2>
+          <p>Thanks, <strong id="success-name"></strong>. Our team will email your widget script and installation instructions to <strong id="success-email"></strong>.</p>
+          <button type="button" class="secondary-button" id="submit-another">Submit another response</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand footer-brand" href="#top" aria-label="DochGames home"><span class="official-logo"><img src="./dochgames-logo-monochrome.png" alt="DochGames" loading="lazy" /></span><span class="brand-section">by Dochase</span></a>
+    <div><span>© <span id="year"></span></span><a class="footer-link" href="https://dochaseadx.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a></div>
+  </footer>
+
+  <iframe name="submission-frame" id="submission-frame" title="Form submission" hidden></iframe>
+  <script src="./config.js"></script><script src="./app.js"></script>
+</body>
+</html>
