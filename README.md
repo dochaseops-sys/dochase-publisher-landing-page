@@ -10,7 +10,7 @@ Serve the repository root as a static website. No dependencies or build command 
 
 The Apps Script links to its containing spreadsheet when `setup` runs. Its destination ID is stored in private Apps Script properties, not in this repository. The destination tab is `Sheet1`.
 
-The website's `config.js` still contains an endpoint placeholder. Submissions are not saved until the Google web app is deployed and its URL is added.
+The website's `config.js` contains the configured web app endpoint. Changes to Code.gs must also be deployed in Google Apps Script to take effect.
 
 1. Open your destination spreadsheet in Google Sheets.
 2. Choose **Extensions → Apps Script**.
@@ -21,7 +21,7 @@ The website's `config.js` still contains an endpoint placeholder. Submissions ar
 7. Copy the web app URL ending in `/exec` into the `endpoint` value in `config.js`, commit and redeploy the site.
 8. Submit a test registration. Verify one row appears in the Sheet and the website shows confirmation. Repeat the same email to verify duplicate handling.
 
-The script validates required fields, checks a honeypot, prevents duplicate email entries, serialises writes and protects against spreadsheet formula injection. It does not send emails or generate widget scripts. Email delivery remains a manual team task.
+The script validates required fields, checks a honeypot, prevents repeat email addresses or website hostnames (ignoring case, www, scheme, ports, paths and query strings), blocks dochase.com and dochaseadx.com including their subdomains, serialises writes and protects against spreadsheet formula injection. It does not send emails or generate widget scripts. Email delivery remains a manual team task.
 
 Keep the spreadsheet private; only the web app endpoint needs public access.
 
@@ -32,3 +32,7 @@ Run `python3 -m http.server 8000` in the repository root, then visit `http://loc
 ## Branding
 
 The Giga logo and live-widget screenshot were supplied by Dochase. CSS displays the monochrome logo as black artwork on white. The favicon is the Dochase mark from dochaseadx.com. Page typography uses Google Fonts.
+
+## Updating an existing Apps Script deployment
+
+Replace the deployed Code.gs with the version in this repository, then choose **Deploy → Manage deployments → Edit → Version: New version → Deploy**. Keep the same web app URL. A GitHub push does not update Apps Script. Existing rows are preserved and checked for duplicates; existing duplicate rows are not deleted. Distinct subdomains other than www are treated as separate publisher websites.

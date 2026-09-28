@@ -57,13 +57,18 @@ function doPost(event) {
       return respond("error", "Please check the required fields and try again.");
     }
 
+    if (isBlockedWebsite(website)) {
+      return respond("error", "Enter your own publication’s website. Dochase domains cannot be registered.");
+    }
+
     const sheet = registrationSheet();
 
     const lastRow = sheet.getLastRow();
     if (lastRow > 1) {
-      const existingEmails = sheet.getRange(2, 3, lastRow - 1, 1).getDisplayValues().flat();
-      if (existingEmails.some((value) => String(value).trim().toLowerCase() === email)) {
-        return respond("duplicate");
+      const registrations = sheet.getRange(2, 3, lastRow - 1, 3).getDisplayValues();
+      const host = websiteHost(website);
+      if (registrations.some((row) => String(row[0]).trim().toLowerCase() === email || websiteHost(row[2]) === host)) {
+        return respond("duplicate", "A registration already exists for this email or website. If you need to update it, contact the DochGames team.");
       }
     }
 
@@ -80,6 +85,7 @@ function doPost(event) {
       "",
     ]);
 
+    SpreadsheetApp.flush(); // Commit the row before releasing the duplicate-check lock.
     return respond("success");
   } catch (error) {
     console.error(error);
@@ -101,8 +107,28 @@ function isEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+// Keep these domain rules identical in app.js and google-apps-script/Code.gs.
+function websiteHost(value) {
+  const address = String(value || "").trim();
+  if (!address || /[\s\\\u0000-\u001F\u007F]/.test(address)) return "";
+  const match = address.match(/^(?:https?:\/\/)?([^/?#]+)(?:[/?#].*)?$/i);
+  if (!match) return "";
+  const authority = match[1].match(/^([a-z0-9.-]+)(?::([0-9]{1,5}))?$/i);
+  if (!authority || (authority[2] && (+authority[2] < 1 || +authority[2] > 65535))) return "";
+  const host = authority[1].toLowerCase().replace(/\.$/, "");
+  const labels = host.split(".");
+  if (host.length > 253 || labels.length < 2 || !/^[a-z]{2,}$/.test(labels[labels.length - 1])) return "";
+  if (!labels.every((label) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label))) return "";
+  return host.replace(/^www\./, "");
+}
+
+function isBlockedWebsite(value) {
+  const host = websiteHost(value);
+  return ["dochase.com", "dochaseadx.com"].some((domain) => host === domain || host.endsWith("." + domain));
+}
+
 function isWebsite(value) {
-  return /^(https?:\/\/)?[a-z0-9.-]+\.[a-z]{2,}(\/.*)?$/i.test(value);
+  return Boolean(websiteHost(value));
 }
 
 function normalizeWebsite(value) {

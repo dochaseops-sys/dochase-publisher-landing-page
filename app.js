@@ -41,13 +41,28 @@ function normalizeWebsite(value) {
   return value.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
 }
 
+// Keep these domain rules identical in app.js and google-apps-script/Code.gs.
+function websiteHost(value) {
+  const address = String(value || "").trim();
+  if (!address || /[\s\\\u0000-\u001F\u007F]/.test(address)) return "";
+  const match = address.match(/^(?:https?:\/\/)?([^/?#]+)(?:[/?#].*)?$/i);
+  if (!match) return "";
+  const authority = match[1].match(/^([a-z0-9.-]+)(?::([0-9]{1,5}))?$/i);
+  if (!authority || (authority[2] && (+authority[2] < 1 || +authority[2] > 65535))) return "";
+  const host = authority[1].toLowerCase().replace(/\.$/, "");
+  const labels = host.split(".");
+  if (host.length > 253 || labels.length < 2 || !/^[a-z]{2,}$/.test(labels[labels.length - 1])) return "";
+  if (!labels.every((label) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label))) return "";
+  return host.replace(/^www\./, "");
+}
+
+function isBlockedWebsite(value) {
+  const host = websiteHost(value);
+  return ["dochase.com", "dochaseadx.com"].some((domain) => host === domain || host.endsWith("." + domain));
+}
+
 function isValidWebsite(value) {
-  try {
-    const url = new URL(`https://${normalizeWebsite(value)}`);
-    return url.hostname.includes(".") && !url.hostname.includes(" ");
-  } catch {
-    return false;
-  }
+  return Boolean(websiteHost(value));
 }
 
 function setError(field, message = "") {
@@ -75,6 +90,9 @@ function validate() {
   }
   if (!isValidWebsite(fields.website.input.value)) {
     setError(fields.website, fields.website.message);
+    valid = false;
+  } else if (isBlockedWebsite(fields.website.input.value)) {
+    setError(fields.website, "Enter your own publication’s website. Dochase domains cannot be registered.");
     valid = false;
   }
   if (!fields.consent.input.checked) {
@@ -104,6 +122,10 @@ function showSuccess(status) {
 }
 
 form.addEventListener("submit", (event) => {
+  if (submitButton.disabled) {
+    event.preventDefault();
+    return;
+  }
   formStatus.textContent = "";
   if (!validate()) {
     event.preventDefault();
@@ -131,8 +153,11 @@ form.addEventListener("submit", (event) => {
 window.addEventListener("message", (event) => {
   const data = event.data;
   if (!data || data.source !== "dochgames-publisher-waitlist") return;
-  if (data.status === "success" || data.status === "duplicate") showSuccess(data.status);
-  else {
+  if (data.status === "success") showSuccess(data.status);
+  else if (data.status === "duplicate") {
+    setLoading(false);
+    formStatus.textContent = data.message || "A registration already exists for this email or website. If you need to update it, contact the DochGames team.";
+  } else {
     setLoading(false);
     formStatus.textContent = data.message || "We couldn’t save your details. Please check the form and try again.";
   }
