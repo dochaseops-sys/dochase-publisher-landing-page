@@ -46,13 +46,19 @@
       <div class="form-area">
         <div id="form-view">
           <h2 id="form-title">Register your website</h2>
-          <p class="form-intro">Tell us where you’d like to add DochGames. All four fields are required.</p>
+          <p class="form-intro">Tell us where you’d like to add DochGames. All fields below are required.</p>
           <form id="waitlist-form" method="post" target="submission-frame" novalidate>
             <div class="field">
-              <label for="full-name">Full name <span>*</span></label>
-              <input id="full-name" name="fullName" type="text" autocomplete="name" required />
-              <span class="field-error" id="full-name-error"></span>
+              <label for="first-name">First name <span>*</span></label>
+              <input id="first-name" name="firstName" type="text" autocomplete="given-name" maxlength="60" required />
+              <span class="field-error" id="first-name-error"></span>
             </div>
+            <div class="field">
+              <label for="last-name">Last name <span>*</span></label>
+              <input id="last-name" name="lastName" type="text" autocomplete="family-name" maxlength="60" required />
+              <span class="field-error" id="last-name-error"></span>
+            </div>
+            <input type="hidden" id="full-name" name="fullName" />
             <div class="field">
               <label for="work-email">Work email <span>*</span></label>
               <input id="work-email" name="email" type="email" autocomplete="email" inputmode="email" required />

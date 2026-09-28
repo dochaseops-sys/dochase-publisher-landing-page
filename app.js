@@ -6,10 +6,15 @@ const formView = document.querySelector("#form-view");
 const endpoint = window.DOCHGAMES_WAITLIST_CONFIG?.endpoint || "";
 
 const fields = {
-  fullName: {
-    input: document.querySelector("#full-name"),
-    error: document.querySelector("#full-name-error"),
-    message: "Enter your full name.",
+  firstName: {
+    input: document.querySelector("#first-name"),
+    error: document.querySelector("#first-name-error"),
+    message: "Enter your first name.",
+  },
+  lastName: {
+    input: document.querySelector("#last-name"),
+    error: document.querySelector("#last-name-error"),
+    message: "Enter your last name.",
   },
   email: {
     input: document.querySelector("#work-email"),
@@ -61,6 +66,13 @@ function isBlockedWebsite(value) {
   return ["dochase.com", "dochaseadx.com", "facebook.com", "instagram.com", "google.com"].some((domain) => host === domain || host.endsWith("." + domain));
 }
 
+function isBlockedPublication(value) {
+  const name = String(value || "").normalize("NFKC").toLowerCase()
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/[^a-z0-9]+/g, " ").trim();
+  return /\b(?:dochase(?:\s*adx)?|face\s*book|insta\s*gram|google)\b/.test(name);
+}
+
 function isValidWebsite(value) {
   return Boolean(websiteHost(value));
 }
@@ -76,9 +88,11 @@ function validate() {
   let valid = true;
   for (const field of Object.values(fields)) setError(field);
 
-  if (!fields.fullName.input.value.trim()) {
-    setError(fields.fullName, fields.fullName.message);
-    valid = false;
+  for (const field of [fields.firstName, fields.lastName]) {
+    if (!field.input.value.trim()) {
+      setError(field, field.message);
+      valid = false;
+    }
   }
   if (!fields.email.input.validity.valid || !fields.email.input.value.trim()) {
     setError(fields.email, fields.email.message);
@@ -86,6 +100,9 @@ function validate() {
   }
   if (!fields.publication.input.value.trim()) {
     setError(fields.publication, fields.publication.message);
+    valid = false;
+  } else if (isBlockedPublication(fields.publication.input.value)) {
+    setError(fields.publication, "Enter your own publication or company name. Dochase, Facebook, Instagram and Google cannot be used.");
     valid = false;
   }
   if (!isValidWebsite(fields.website.input.value)) {
@@ -112,7 +129,7 @@ function setLoading(loading) {
 
 function showSuccess(status) {
   setLoading(false);
-  document.querySelector("#success-name").textContent = fields.fullName.input.value.trim().split(" ")[0];
+  document.querySelector("#success-name").textContent = fields.firstName.input.value.trim();
   document.querySelector("#success-email").textContent = fields.email.input.value.trim();
   successView.querySelector(".success-label").textContent = status === "duplicate" ? "Registration already received" : "Registration received";
   successView.querySelector("h2").textContent = status === "duplicate" ? "We already have your registration." : "Your website is registered.";
@@ -138,6 +155,8 @@ form.addEventListener("submit", (event) => {
     return;
   }
 
+  // Retain fullName for compatibility while the Apps Script deployment is updated.
+  document.querySelector("#full-name").value = fields.firstName.input.value.trim() + " " + fields.lastName.input.value.trim();
   fields.website.input.value = normalizeWebsite(fields.website.input.value);
   form.action = endpoint;
   setLoading(true);
@@ -168,7 +187,7 @@ document.querySelector("#submit-another").addEventListener("click", () => {
   formView.hidden = false;
   successView.hidden = true;
   formStatus.textContent = "";
-  fields.fullName.input.focus();
+  fields.firstName.input.focus();
 });
 
 document.querySelector("#year").textContent = new Date().getFullYear();

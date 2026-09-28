@@ -45,7 +45,9 @@ function doPost(event) {
 
     if (payload.faxNumber) return respond("success");
 
-    const fullName = clean(payload.fullName, 120);
+    const firstName = clean(payload.firstName, 60);
+    const lastName = clean(payload.lastName, 60);
+    const fullName = firstName + " " + lastName;
     const email = clean(payload.email, 180).toLowerCase();
     const publication = clean(payload.publication, 180);
     const website = clean(payload.website, 300);
@@ -53,8 +55,12 @@ function doPost(event) {
     const marketing = payload.marketing === "Yes" ? "Yes" : "No";
     const source = clean(payload.source || "publisher-registration", 80);
 
-    if (!fullName || !isEmail(email) || !publication || !isWebsite(website) || consent !== "Yes") {
+    if (!firstName || !lastName || !isEmail(email) || !publication || !isWebsite(website) || consent !== "Yes") {
       return respond("error", "Please check the required fields and try again.");
+    }
+
+    if (isBlockedPublication(publication)) {
+      return respond("error", "Enter your own publication or company name. Dochase, Facebook, Instagram and Google cannot be used.");
     }
 
     if (isBlockedWebsite(website)) {
@@ -125,6 +131,13 @@ function websiteHost(value) {
 function isBlockedWebsite(value) {
   const host = websiteHost(value);
   return ["dochase.com", "dochaseadx.com", "facebook.com", "instagram.com", "google.com"].some((domain) => host === domain || host.endsWith("." + domain));
+}
+
+function isBlockedPublication(value) {
+  const name = String(value || "").normalize("NFKC").toLowerCase()
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/[^a-z0-9]+/g, " ").trim();
+  return /\b(?:dochase(?:\s*adx)?|face\s*book|insta\s*gram|google)\b/.test(name);
 }
 
 function isWebsite(value) {

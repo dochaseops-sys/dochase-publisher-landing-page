@@ -36,3 +36,7 @@ The Giga logo and live-widget screenshot were supplied by Dochase. CSS displays 
 ## Updating an existing Apps Script deployment
 
 Replace the deployed Code.gs with the version in this repository, then choose **Deploy → Manage deployments → Edit → Version: New version → Deploy**. Keep the same web app URL. A GitHub push does not update Apps Script. Existing rows are preserved and checked for duplicates; existing duplicate rows are not deleted. Distinct subdomains other than www are treated as separate publisher websites.
+
+The publication/company field also rejects Dochase, DochaseADX, Facebook, Instagram and Google names, including case, punctuation, common spacing variations and names with suffixes such as Ltd or LLC. These checks run in the form and in Apps Script.
+
+The form collects required First name and Last name fields separately, with given-name and family-name autocomplete. Apps Script combines them in the existing Full name column, preserving the current spreadsheet layout. Update Apps Script when deploying this form change.
